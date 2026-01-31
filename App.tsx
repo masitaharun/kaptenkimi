@@ -11,7 +11,7 @@ import confetti from 'canvas-confetti';
 
 const App: React.FC = () => {
   const [progress, setProgress] = useState<UserProgress>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
     if (saved) {
       try {
         const parsed = JSON.parse(saved) as UserProgress;
@@ -37,7 +37,7 @@ const App: React.FC = () => {
   useEffect(() => {
     setIsSaving(true);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-    const timer = setTimeout(() => setIsSaving(false), 1000);
+    const timer = setTimeout(() => setIsSaving(false), 800);
     return () => clearTimeout(timer);
   }, [progress]);
 
@@ -49,6 +49,7 @@ const App: React.FC = () => {
       const lastDate = new Date(progress.lastUpdated).toDateString();
       const currentDate = now.toDateString();
 
+      // Reset jika hari sudah bertukar atau tepat jam 23:59
       if (lastDate !== currentDate || (hours === 23 && minutes === 59)) {
         setProgress({
           score: 0,
@@ -168,7 +169,7 @@ const App: React.FC = () => {
           <div className="mt-8 flex justify-between text-xs font-bold text-gray-400 uppercase tracking-tighter">
             <span>Bumi (Mula)</span>
             <div className="flex flex-col items-center">
-              <span className={`transition-all duration-500 ${progress.score >= 80 ? 'text-yellow-400 scale-110' : ''}`}>
+              <span className={`transition-all duration-500 ${progress.score >= 80 ? 'text-yellow-400 scale-110 font-black' : ''}`}>
                 🎁 Hadiah TV
               </span>
               <div className={`h-2 w-2 rounded-full mt-1 ${progress.score >= 80 ? 'bg-yellow-400 shadow-[0_0_10px_yellow]' : 'bg-gray-700'}`}></div>
