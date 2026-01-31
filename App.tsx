@@ -7,9 +7,9 @@ import SaturnProgress from './components/SaturnProgress';
 import RewardOverlay from './components/RewardOverlay';
 import GalaxyBackground from './components/GalaxyBackground';
 import { Rocket, Star, Info, AlertTriangle, Save } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 const App: React.FC = () => {
-  // 1. Inisialisasi: Ambil data dari LocalStorage jika ada dan tarikhnya masih sama
   const [progress, setProgress] = useState<UserProgress>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -17,14 +17,11 @@ const App: React.FC = () => {
         const parsed = JSON.parse(saved) as UserProgress;
         const lastDate = new Date(parsed.lastUpdated).toDateString();
         const currentDate = new Date().toDateString();
-        
-        // Hanya guna data lama jika hari masih sama
         if (lastDate === currentDate) return parsed;
       } catch (e) {
         console.error("Gagal membaca data tersimpan", e);
       }
     }
-    // Jika hari baru atau data rosak, mula dari 0
     return {
       score: 0,
       completedTaskIds: [],
@@ -37,7 +34,6 @@ const App: React.FC = () => {
   const [celebrated80, setCelebrated80] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  // 2. Simpan setiap kali progress berubah
   useEffect(() => {
     setIsSaving(true);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
@@ -45,19 +41,15 @@ const App: React.FC = () => {
     return () => clearTimeout(timer);
   }, [progress]);
 
-  // 3. Logik Reset Automatik (Setiap 30 saat semakan dibuat)
   useEffect(() => {
     const checkReset = () => {
       const now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes();
-      
       const lastDate = new Date(progress.lastUpdated).toDateString();
       const currentDate = now.toDateString();
 
-      // Syarat Reset: Hari bertukar ATAU tepat jam 23:59
       if (lastDate !== currentDate || (hours === 23 && minutes === 59)) {
-        console.log("Masa tamat! Reset misi harian...");
         setProgress({
           score: 0,
           completedTaskIds: [],
@@ -69,7 +61,7 @@ const App: React.FC = () => {
       }
     };
 
-    const interval = setInterval(checkReset, 10000); // Semak setiap 10 saat untuk lebih ketepatan
+    const interval = setInterval(checkReset, 10000);
     return () => clearInterval(interval);
   }, [progress.lastUpdated]);
 
@@ -112,7 +104,6 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (progress.score >= 100 && !celebrated100) {
-      // @ts-ignore
       confetti({
         particleCount: 150,
         spread: 70,
