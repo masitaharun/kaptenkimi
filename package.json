@@ -6,20 +6,21 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "lucide-react": "^0.463.0",
-    "canvas-confetti": "^1.6.0"
+    "canvas-confetti": "^1.9.3"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@types/canvas-confetti": "^1.6.0",
-    "typescript": "^5.0.0",
+    "@types/canvas-confetti": "^1.6.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.2",
     "vite": "^6.0.0",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.24",
